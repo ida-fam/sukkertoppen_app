@@ -4,6 +4,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 void main() {
   runApp(MyApp());
 }
@@ -16,10 +17,10 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'Sukkertoppen App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor:const Color.fromARGB(255, 26, 4, 112)),
         ),
         home: MyHomePage(),
       ),
@@ -76,11 +77,14 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = Opslagstavle(); // TODO: Replace with InfoPage
       case 1:
-        page = FavoritesPage();
+        page = Placeholder();
       case 2:
-        page = FavoritesPage(); // TODO: Replace with InfoPage
+        page = Placeholder();
+      case 3:
+        page = Placeholder(); // TODO: Replace with StudentsPage
+              
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -112,15 +116,21 @@ class _MyHomePageState extends State<MyHomePage> {
                         label: 'Home',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.info),
-                        label: 'Info',
+                        icon: Icon(Icons.calendar_month_outlined),
+                        label: 'Skema',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.info),
-                        label: 'Info',
+                        icon: Icon(Icons.school),
+                        label: 'Studieretninger',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.interests_sharp),
+                        label: 'Social',
                       ),
                     ],
                     currentIndex: selectedIndex,
+                    selectedItemColor: Colors.black, // Set the selected item color
+                    unselectedItemColor: Colors.grey, // Set the unselected item color
                     onTap: (value) {
                       setState(() {
                         selectedIndex = value;
@@ -142,12 +152,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         label: Text('Home'),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.favorite),
-                        label: Text('Favorites'),
+                         icon: Icon(Icons.calendar_month_outlined),
+                        label: Text('Skema'),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.info),
-                        label: Text('Info'),
+                        icon: Icon(Icons.school),
+                        label: Text('Studieretninger'),
+                      ),NavigationRailDestination(
+                        icon: Icon(Icons.interests_sharp),
+                        label: Text('Social'),
                       ),
                     ],
                     selectedIndex: selectedIndex,
@@ -215,6 +228,40 @@ class GeneratorPage extends StatelessWidget {
           ),
           Spacer(flex: 2),
         ],
+      ),
+    );
+  }
+}
+
+
+class Opslagstavle extends StatelessWidget {
+  const Opslagstavle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // List of image paths
+    final List<String> images = [
+      'assets/images/metal.png',
+      'assets/images/skate.png',
+      'assets/images/celle.png', 
+      'assets/images/aften.png', 
+      'assets/images/fest.png',
+      // Add more image paths as needed
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title:  Text('SUKKERTOPPEN\nOpslagstavle'),
+        centerTitle: true,
+      ),
+      body: ListView.builder(
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(images[index]),
+          );
+        },
       ),
     );
   }
