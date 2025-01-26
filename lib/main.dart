@@ -1,9 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 
 void main() {
   runApp(MyApp());
@@ -14,228 +9,159 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Sukkertoppen App',
-        theme: ThemeData(
-          useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor:const Color.fromARGB(255, 26, 4, 112)),
-        ),
-        home: MyHomePage(),
+    final ColorScheme colorScheme = ColorScheme(
+      primary: const Color.fromARGB(255, 226, 218, 218),
+      secondary: const Color.fromARGB(255, 69, 70, 70),
+      surface: const Color.fromARGB(224, 16, 5, 77),
+      error: Colors.red,
+      onPrimary: const Color.fromARGB(255, 13, 13, 13),
+      onSecondary: const Color.fromARGB(255, 41, 41, 42),
+      onSurface: const Color.fromARGB(255, 225, 224, 245),
+      onError: Colors.white,
+      brightness: Brightness.light,
+    );
+
+    final ThemeData theme = ThemeData(
+      colorScheme: colorScheme,
+      primaryColor: colorScheme.primary,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSecondary,
+        backgroundColor: colorScheme.onSurface,
       ),
+    );
+
+    return MaterialApp(
+      theme: theme,
+      home: MainPage(),
     );
   }
 }
 
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-  var history = <WordPair>[];
-
-  GlobalKey? historyListKey;
-
-  void getNext() {
-    history.insert(0, current);
-    var animatedList = historyListKey?.currentState as AnimatedListState?;
-    animatedList?.insertItem(0);
-    current = WordPair.random();
-    notifyListeners();
-  }
-
-  var favorites = <WordPair>[];
-
-  void toggleFavorite([WordPair? pair]) {
-    pair = pair ?? current;
-    if (favorites.contains(pair)) {
-      favorites.remove(pair);
-    } else {
-      favorites.add(pair);
-    }
-    notifyListeners();
-  }
-
-  void removeFavorite(WordPair pair) {
-    favorites.remove(pair);
-    notifyListeners();
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
+class _MainPageState extends State<MainPage> {
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = Opslagstavle(); // TODO: Replace with InfoPage
-      case 1:
-        page = Placeholder();
-      case 2:
-        page = Placeholder();
-      case 3:
-        page = Placeholder(); // TODO: Replace with StudentsPage
-              
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
-    // The container for the current page, with its background color
-    // and subtle switching animation.
-    var mainArea = ColoredBox(
-      color: colorScheme.surfaceContainerHighest,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
-        child: page,
-      ),
-    );
-
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 450) {
-            // Use a more mobile-friendly layout with BottomNavigationBar
-            // on narrow screens.
-            return Column(
-              children: [
-                Expanded(child: mainArea),
-                SafeArea(
-                  child: BottomNavigationBar(
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.home),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.calendar_month_outlined),
-                        label: 'Skema',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.school),
-                        label: 'Studieretninger',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.interests_sharp),
-                        label: 'Social',
-                      ),
-                    ],
-                    currentIndex: selectedIndex,
-                    selectedItemColor: Colors.black, // Set the selected item color
-                    unselectedItemColor: Colors.grey, // Set the unselected item color
-                    onTap: (value) {
-                      setState(() {
-                        selectedIndex = value;
-                      });
-                    },
-                  ),
-                )
-              ],
-            );
-          } else {
-            return Row(
-              children: [
-                SafeArea(
-                  child: NavigationRail(
-                    extended: constraints.maxWidth >= 600,
-                    destinations: [
-                      NavigationRailDestination(
-                        icon: Icon(Icons.home),
-                        label: Text('Home'),
-                      ),
-                      NavigationRailDestination(
-                         icon: Icon(Icons.calendar_month_outlined),
-                        label: Text('Skema'),
-                      ),
-                      NavigationRailDestination(
-                        icon: Icon(Icons.school),
-                        label: Text('Studieretninger'),
-                      ),NavigationRailDestination(
-                        icon: Icon(Icons.interests_sharp),
-                        label: Text('Social'),
-                      ),
-                    ],
-                    selectedIndex: selectedIndex,
-                    onDestinationSelected: (value) {
-                      setState(() {
-                        selectedIndex = value;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(child: mainArea),
-              ],
-            );
-          }
+      body: IndexedStack(
+        index: selectedIndex,
+        children: [
+          PostItPicturesPage(), // Home page with Post-it pictures
+          SkemaSide(), // Skema page
+          Placeholder(), // Studieretninger side
+          Placeholder(), // Social media side
+          // Add other pages here
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month_outlined),
+            label: 'Skema',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Studieretninger',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.interests_sharp),
+            label: 'Social',
+          ),
+        ],
+        currentIndex: selectedIndex,
+        onTap: (value) {
+          setState(() {
+            selectedIndex = value;
+          });
         },
       ),
     );
   }
 }
 
-class GeneratorPage extends StatelessWidget {
-  const GeneratorPage({super.key});
+class SkemaSide extends StatelessWidget {
+  const SkemaSide({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Skema'),
+        centerTitle: true,
+      ),
+      body: PageView(
         children: [
-          Expanded(
-            flex: 3,
-            child: HistoryListView(),
-          ),
-          SizedBox(height: 10),
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
+          ScheduleView(
+            schedule: '1g-Klasse',
+            timeSlots: [
+              '08:15 - 09:45: Matematik',
+              '10:00 - 11:30: Engelsk',
+              '12:45 - 14:15: Biologi',
+              '14:30 - 16:00: Dansk',
             ],
           ),
-          Spacer(flex: 2),
+          ScheduleView(
+            schedule: '2g-Klasse',
+            timeSlots: [
+              '08:15 - 09:45: Fysik',
+              '10:00 - 11:30: Kemi',
+              '12:45 - 14:15: Idehistroie',
+            ],
+          ),
+          ScheduleView(
+            schedule: '3g-Klasse',
+            timeSlots: [
+              '10:00 - 11:30: Valgfag',
+              '12:45 - 14:15: Matematik',
+              '14:30 - 16:00: Kemi',
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
+class ScheduleView extends StatelessWidget {
+  final String schedule;
+  final List<String> timeSlots;
 
-class Opslagstavle extends StatelessWidget {
-  const Opslagstavle({super.key});
+  const ScheduleView(
+      {super.key, required this.schedule, required this.timeSlots});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            schedule,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          SizedBox(height: 20),
+          ...timeSlots.map((timeSlot) =>
+              Text(timeSlot, style: Theme.of(context).textTheme.bodyMedium)),
+        ],
+      ),
+    );
+  }
+}
+
+class PostItPicturesPage extends StatelessWidget {
+  const PostItPicturesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -243,15 +169,22 @@ class Opslagstavle extends StatelessWidget {
     final List<String> images = [
       'assets/images/metal.png',
       'assets/images/skate.png',
-      'assets/images/celle.png', 
-      'assets/images/aften.png', 
+      'assets/images/celle.png',
+      'assets/images/aften.png',
       'assets/images/fest.png',
       // Add more image paths as needed
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title:  Text('SUKKERTOPPEN\nOpslagstavle'),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('SUKKERTOPPEN'),
+            Text('Opslagstavle',
+                style: Theme.of(context).textTheme.titleMedium),
+          ],
+        ),
         centerTitle: true,
       ),
       body: ListView.builder(
@@ -260,163 +193,6 @@ class Opslagstavle extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(images[index]),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
-
-  final WordPair pair;
-
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    var style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: AnimatedSize(
-          duration: Duration(milliseconds: 200),
-          // Make sure that the compound word wraps correctly when the window
-          // is too narrow.
-          child: MergeSemantics(
-            child: Wrap(
-              children: [
-                Text(
-                  pair.first,
-                  style: style.copyWith(fontWeight: FontWeight.w200),
-                ),
-                Text(
-                  pair.second,
-                  style: style.copyWith(fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class FavoritesPage extends StatelessWidget {
-  const FavoritesPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    var appState = context.watch<MyAppState>();
-
-    if (appState.favorites.isEmpty) {
-      return Center(
-        child: Text('No favorites yet.'),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(30),
-          child: Text('You have '
-              '${appState.favorites.length} favorites:'),
-        ),
-        Expanded(
-          // Make better use of wide windows with a grid.
-          child: GridView(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 400,
-              childAspectRatio: 400 / 80,
-            ),
-            children: [
-              for (var pair in appState.favorites)
-                ListTile(
-                  leading: IconButton(
-                    icon: Icon(Icons.delete_outline, semanticLabel: 'Delete'),
-                    color: theme.colorScheme.primary,
-                    onPressed: () {
-                      appState.removeFavorite(pair);
-                    },
-                  ),
-                  title: Text(
-                    pair.asLowerCase,
-                    semanticsLabel: pair.asPascalCase,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class HistoryListView extends StatefulWidget {
-  const HistoryListView({super.key});
-
-  @override
-  State<HistoryListView> createState() => _HistoryListViewState();
-}
-
-class _HistoryListViewState extends State<HistoryListView> {
-  /// Needed so that [MyAppState] can tell [AnimatedList] below to animate
-  /// new items.
-  final _key = GlobalKey();
-
-  /// Used to "fade out" the history items at the top, to suggest continuation.
-  static const Gradient _maskingGradient = LinearGradient(
-    // This gradient goes from fully transparent to fully opaque black...
-    colors: [Colors.transparent, Colors.black],
-    // ... from the top (transparent) to half (0.5) of the way to the bottom.
-    stops: [0.0, 0.5],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    final appState = context.watch<MyAppState>();
-    appState.historyListKey = _key;
-
-    return ShaderMask(
-      shaderCallback: (bounds) => _maskingGradient.createShader(bounds),
-      // This blend mode takes the opacity of the shader (i.e. our gradient)
-      // and applies it to the destination (i.e. our animated list).
-      blendMode: BlendMode.dstIn,
-      child: AnimatedList(
-        key: _key,
-        reverse: true,
-        padding: EdgeInsets.only(top: 100),
-        initialItemCount: appState.history.length,
-        itemBuilder: (context, index, animation) {
-          final pair = appState.history[index];
-          return SizeTransition(
-            sizeFactor: animation,
-            child: Center(
-              child: TextButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite(pair);
-                },
-                icon: appState.favorites.contains(pair)
-                    ? Icon(Icons.favorite, size: 12)
-                    : SizedBox(),
-                label: Text(
-                  pair.asLowerCase,
-                  semanticsLabel: pair.asPascalCase,
-                ),
-              ),
-            ),
           );
         },
       ),
