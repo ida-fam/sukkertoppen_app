@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 // Define a global list of course objects
 final List<Map<String, String>> courses = [
@@ -106,7 +107,7 @@ class _MainPageState extends State<MainPage> {
           PostItPicturesPage(), // Home page with Post-it pictures
           SkemaSide(), // Skema page
           StudieretningerSide(), // Studieretninger side
-          Placeholder(), // Social media side
+          LinksSide(), // Social media side
           // Add other pages here
         ],
       ),
@@ -250,6 +251,8 @@ class PostItPicturesPage extends StatelessWidget {
 }
 
 class StudieretningerSide extends StatelessWidget {
+  const StudieretningerSide({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -272,7 +275,8 @@ class CourseDescriptionPage extends StatelessWidget {
   final String courseName;
   final String description;
 
-  CourseDescriptionPage({required this.courseName, required this.description});
+  const CourseDescriptionPage(
+      {super.key, required this.courseName, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +294,90 @@ class CourseDescriptionPage extends StatelessWidget {
           // Add more description content here if needed
         ],
       ),
+    );
+  }
+}
+
+class LinksSide extends StatelessWidget {
+  final List<Map<String, String>> links = [
+    {
+      'title': 'Sukkertoppen',
+      'url': 'https://www.nextkbh.dk/gymnasier/sukkertoppen-gymnasium/'
+    },
+    {'title': 'YouTube', 'url': 'https://youtube.com'},
+    {'title': 'DR', 'url': 'https://dr.dk'},
+    {'title': 'TV2', 'url': 'https://tv2.dk'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Links'),
+        centerTitle: true,
+      ),
+      body: PageView(
+        children: links.map((link) {
+          return ListView(
+            padding: EdgeInsets.all(16.0),
+            children: [
+              Text(
+                link['title']!,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  padding: EdgeInsets.all(16.0),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WebViewPage(url: link['url']!),
+                    ),
+                  );
+                },
+                child: Text('Go to ${link['title']}'),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class WebViewPage extends StatefulWidget {
+  final String url;
+
+  WebViewPage({required this.url});
+
+  @override
+  _WebViewPageState createState() => _WebViewPageState();
+}
+
+class _WebViewPageState extends State<WebViewPage> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(widget.url));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Web View'),
+      ),
+      body: WebViewWidget(controller: _controller),
     );
   }
 }
