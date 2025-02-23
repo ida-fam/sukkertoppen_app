@@ -2,51 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Define a global list of course objects
-final List<Map<String, String>> courses = [
+final List<Map<String, dynamic>> courses = [
   {
     'courseName': 'Science Kemi',
     'description':
-        'Til dig, der elsker eksperimenter og vil forstå kemiens rolle i verden! På Sukkertoppen kombinerer du matematik og kemi på højt niveau, og får praktisk erfaring med at arbejde med kemiske problemstillinger inden for sundhed, miljø og teknologi.'
+        'Til dig, der elsker eksperimenter og vil forstå kemiens rolle i verden! På Sukkertoppen kombinerer du matematik og kemi på højt niveau, og får praktisk erfaring med at arbejde med kemiske problemstillinger inden for sundhed, miljø og teknologi.',
+    'icon': Icons.science,
   },
   {
     'courseName': 'Science Fysik',
     'description':
-        'for dig, der kan lide formler, facts og forsøg. På Sukkertoppen kombinerer vi matematik og fysik med spændende eksperimenter. Perfekt for dig, der vil forstå naturens love og bruge dem i praksis!'
+        'for dig, der kan lide formler, facts og forsøg. På Sukkertoppen kombinerer vi matematik og fysik med spændende eksperimenter. Perfekt for dig, der vil forstå naturens love og bruge dem i praksis!',
+    'icon': Icons.all_inclusive,
   },
   {
     'courseName': 'Science Biologi',
     'description':
-        'Er du nysgerrig på, hvordan naturen og mennesket fungerer? På Sukkertoppen kombinerer vi biologi og matematik for at forstå alt fra mikroskopiske livsformer til komplekse økosystemer. Dyk ned i bioteknologi, sundhed og miljø – og se, hvordan biologisk viden anvendes i praksis.'
+        'Er du nysgerrig på, hvordan naturen og mennesket fungerer? På Sukkertoppen kombinerer vi biologi og matematik for at forstå alt fra mikroskopiske livsformer til komplekse økosystemer. Dyk ned i bioteknologi, sundhed og miljø – og se, hvordan biologisk viden anvendes i praksis.',
+    'icon': Icons.biotech,
   },
   {
     'courseName': 'Geoscience',
     'description':
-        'For dig, der brænder for klima, miljø og en bæredygtig fremtid! På Sukkertoppen udforsker du jordens tilblivelse, naturfænomener og arbejder med geovidenskab gennem både feltture og eksperimenter. Få indsigt i de vigtige processer, der former vores verden.'
+        'For dig, der brænder for klima, miljø og en bæredygtig fremtid! På Sukkertoppen udforsker du jordens tilblivelse, naturfænomener og arbejder med geovidenskab gennem både feltture og eksperimenter. Få indsigt i de vigtige processer, der former vores verden.',
+    'icon': Icons.public,
   },
   {
     'courseName': 'Arkitektur og Design:',
     'description':
-        'For dig, der vil kombinere kreativitet og matematik i arbejdet med design og arkitektur.Her får du mulighed for at udvikle innovative løsninger, fordybe dig i designprocesser og udforske, hvordan matematik kan bruges som et værktøj til at forme fremtidens arkitektur.Bliv en del af et unikt studiemiljø, hvor design og matematik går hånd i hånd.'
+        'For dig, der vil kombinere kreativitet og matematik i arbejdet med design og arkitektur.Her får du mulighed for at udvikle innovative løsninger, fordybe dig i designprocesser og udforske, hvordan matematik kan bruges som et værktøj til at forme fremtidens arkitektur.Bliv en del af et unikt studiemiljø, hvor design og matematik går hånd i hånd.',
+    'icon': Icons.architecture,
   },
   {
     'courseName': 'Teknologi  og Design',
     'description':
-        'Synes du, det lyder interessant at opfinde og designe løsninger på virkelige problemer? På Sukkertoppen lærer du at udvikle teknologiske produkter og arbejde kreativt med designprocesser – fra idé til færdigt produkt i værkstedet.'
+        'Synes du, det lyder interessant at opfinde og designe løsninger på virkelige problemer? På Sukkertoppen lærer du at udvikle teknologiske produkter og arbejde kreativt med designprocesser – fra idé til færdigt produkt i værkstedet.',
+    'icon': Icons.design_services,
   },
   {
     'courseName': 'Kommunikation og IT',
     'description':
-        'Brænder du for at bruge kreativitet og IT til at formidle dine ideer? På Sukkertoppen lærer du at kombinere kommunikation, design og teknologi for at skabe effektive løsninger, både digitalt og trykt.'
+        'Brænder du for at bruge kreativitet og IT til at formidle dine ideer? På Sukkertoppen lærer du at kombinere kommunikation, design og teknologi for at skabe effektive løsninger, både digitalt og trykt.',
+    'icon': Icons.computer,
   },
   {
     'courseName': 'Computerscience - Programmering',
     'description':
-        'Er du nysgerrig på, hvordan computere virker? På Sukkertoppen lærer du at kode, forstå matematikken bag programmering og bygge dine egne programmer. Få praktisk erfaring og bliv skaber af digitale løsninger.'
+        'Er du nysgerrig på, hvordan computere virker? På Sukkertoppen lærer du at kode, forstå matematikken bag programmering og bygge dine egne programmer. Få praktisk erfaring og bliv skaber af digitale løsninger.',
+    'icon': Icons.code,
   },
   {
     'courseName': 'Computerscience - Informatik',
     'description':
-        'Er du nysgerrig på, hvordan IT-systemer hænger sammen? På Sukkertoppen lærer du at forstå både hardware og software, og hvordan de arbejder sammen. Få viden og færdigheder til at optimere og udvikle IT-løsninger, der gør en forskel.'
+        'Er du nysgerrig på, hvordan IT-systemer hænger sammen? På Sukkertoppen lærer du at forstå både hardware og software, og hvordan de arbejder sammen. Få viden og færdigheder til at optimere og udvikle IT-løsninger, der gør en forskel.',
+    'icon': Icons.account_tree,
   },
 ];
 
@@ -317,6 +326,7 @@ class _StudieretningerSideState extends State<StudieretningerSide> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Studieretninger'),
+        centerTitle: true,
       ),
       body: Stack(
         children: [
@@ -331,6 +341,7 @@ class _StudieretningerSideState extends State<StudieretningerSide> {
               return CourseDescriptionPage(
                 courseName: course['courseName']!,
                 description: course['description']!,
+                icon: course['icon']!,
               );
             }).toList(),
           ),
@@ -371,15 +382,21 @@ class _StudieretningerSideState extends State<StudieretningerSide> {
 class CourseDescriptionPage extends StatelessWidget {
   final String courseName;
   final String description;
+  final IconData icon;
 
-  const CourseDescriptionPage(
-      {super.key, required this.courseName, required this.description});
+  const CourseDescriptionPage({
+    super.key,
+    required this.courseName,
+    required this.description,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(courseName),
+        centerTitle: true,
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
@@ -387,6 +404,17 @@ class CourseDescriptionPage extends StatelessWidget {
           Text(
             description,
             style: TextStyle(fontSize: 18),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 100,
+                color: Theme.of(context).primaryColor,
+              ),
+            ],
           ),
           // Add more description content here if needed
         ],
