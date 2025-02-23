@@ -141,8 +141,16 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-class SkemaSide extends StatelessWidget {
+class SkemaSide extends StatefulWidget {
   const SkemaSide({super.key});
+
+  @override
+  _SkemaSideState createState() => _SkemaSideState();
+}
+
+class _SkemaSideState extends State<SkemaSide> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -151,36 +159,74 @@ class SkemaSide extends StatelessWidget {
         title: Text('Skema'),
         centerTitle: true,
       ),
-      body: PageView(
+      body: Stack(
         children: [
-          ScheduleView(
-            schedule: '1g-Klasse',
-            timeSlots: [
-              'Mandag',
-              '08:15 - 09:45: Matematik',
-              '10:00 - 11:30: Engelsk',
-              '12:45 - 14:15: Biologi',
-              '14:30 - 16:00: Dansk',
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            children: [
+              ScheduleView(
+                schedule: '1g-Klasse',
+                timeSlots: [
+                  'Mandag',
+                  '08:15 - 09:45: Matematik',
+                  '10:00 - 11:30: Engelsk',
+                  '12:45 - 14:15: Biologi',
+                  '14:30 - 16:00: Dansk',
+                ],
+              ),
+              ScheduleView(
+                schedule: '2g-Klasse',
+                timeSlots: [
+                  'Tirsdag',
+                  '08:15 - 09:45: Fysik',
+                  '10:00 - 11:30: Kemi',
+                  '12:45 - 14:15: Idehistroie',
+                ],
+              ),
+              ScheduleView(
+                schedule: '3g-Klasse',
+                timeSlots: [
+                  'Onsdag',
+                  '10:00 - 11:30: Valgfag',
+                  '12:45 - 14:15: Matematik',
+                  '14:30 - 16:00: Kemi',
+                ],
+              ),
             ],
           ),
-          ScheduleView(
-            schedule: '2g-Klasse',
-            timeSlots: [
-              'Tirsdag',
-              '08:15 - 09:45: Fysik',
-              '10:00 - 11:30: Kemi',
-              '12:45 - 14:15: Idehistroie',
-            ],
-          ),
-          ScheduleView(
-            schedule: '3g-Klasse',
-            timeSlots: [
-              'Onsdag',
-              '10:00 - 11:30: Valgfag',
-              '12:45 - 14:15: Matematik',
-              '14:30 - 16:00: Kemi',
-            ],
-          ),
+          if (_currentPage > 0)
+            Positioned(
+              left: 16.0,
+              top: MediaQuery.of(context).size.height / 2 - 24,
+              child: ArrowIndicator(
+                onTap: () {
+                  _pageController.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                icon: Icons.arrow_back,
+              ),
+            ),
+          if (_currentPage < 2) // Assuming there are 3 pages (0, 1, 2)
+            Positioned(
+              right: 16.0,
+              top: MediaQuery.of(context).size.height / 2 - 24,
+              child: ArrowIndicator(
+                onTap: () {
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                icon: Icons.arrow_forward,
+              ),
+            ),
         ],
       ),
     );
@@ -191,8 +237,7 @@ class ScheduleView extends StatelessWidget {
   final String schedule;
   final List<String> timeSlots;
 
-  const ScheduleView(
-      {super.key, required this.schedule, required this.timeSlots});
+  ScheduleView({required this.schedule, required this.timeSlots});
 
   @override
   Widget build(BuildContext context) {
@@ -205,8 +250,10 @@ class ScheduleView extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           SizedBox(height: 20),
-          ...timeSlots.map((timeSlot) =>
-              Text(timeSlot, style: Theme.of(context).textTheme.bodyMedium)),
+          ...timeSlots
+              .map((timeSlot) =>
+                  Text(timeSlot, style: Theme.of(context).textTheme.bodyMedium))
+              .toList(),
         ],
       ),
     );
@@ -254,8 +301,16 @@ class PostItPicturesPage extends StatelessWidget {
   }
 }
 
-class StudieretningerSide extends StatelessWidget {
+class StudieretningerSide extends StatefulWidget {
   const StudieretningerSide({super.key});
+
+  @override
+  _StudieretningerSideState createState() => _StudieretningerSideState();
+}
+
+class _StudieretningerSideState extends State<StudieretningerSide> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -263,13 +318,51 @@ class StudieretningerSide extends StatelessWidget {
       appBar: AppBar(
         title: Text('Studieretninger'),
       ),
-      body: PageView(
-        children: courses.map((course) {
-          return CourseDescriptionPage(
-            courseName: course['courseName']!,
-            description: course['description']!,
-          );
-        }).toList(),
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            children: courses.map((course) {
+              return CourseDescriptionPage(
+                courseName: course['courseName']!,
+                description: course['description']!,
+              );
+            }).toList(),
+          ),
+          if (_currentPage > 0)
+            Positioned(
+              left: 16.0,
+              top: MediaQuery.of(context).size.height / 2 - 24,
+              child: ArrowIndicator(
+                onTap: () {
+                  _pageController.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                icon: Icons.arrow_back,
+              ),
+            ),
+          if (_currentPage < courses.length - 1)
+            Positioned(
+              right: 16.0,
+              top: MediaQuery.of(context).size.height / 2 - 24,
+              child: ArrowIndicator(
+                onTap: () {
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                icon: Icons.arrow_forward,
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -387,6 +480,31 @@ class _WebViewPageState extends State<WebViewPage> {
         title: Text('Web View'),
       ),
       body: WebViewWidget(controller: _controller),
+    );
+  }
+}
+
+class ArrowIndicator extends StatelessWidget {
+  final VoidCallback onTap;
+  final IconData icon;
+
+  ArrowIndicator({required this.onTap, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
