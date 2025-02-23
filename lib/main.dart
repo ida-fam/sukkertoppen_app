@@ -62,11 +62,11 @@ class MyApp extends StatelessWidget {
     final ColorScheme colorScheme = ColorScheme(
       primary: const Color.fromARGB(255, 226, 218, 218),
       secondary: const Color.fromARGB(255, 69, 70, 70),
-      surface: const Color.fromARGB(224, 16, 5, 77),
+      surface: const Color.fromARGB(223, 14, 9, 72),
       error: Colors.red,
       onPrimary: const Color.fromARGB(255, 13, 13, 13),
-      onSecondary: const Color.fromARGB(255, 41, 41, 42),
-      onSurface: const Color.fromARGB(255, 225, 224, 245),
+      onSecondary: const Color.fromRGBO(79, 79, 81, 1),
+      onSurface: const Color.fromARGB(255, 204, 204, 214),
       onError: Colors.white,
       brightness: Brightness.light,
     );
@@ -115,7 +115,7 @@ class _MainPageState extends State<MainPage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Hjem',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month_outlined),
@@ -156,6 +156,7 @@ class SkemaSide extends StatelessWidget {
           ScheduleView(
             schedule: '1g-Klasse',
             timeSlots: [
+              'Mandag',
               '08:15 - 09:45: Matematik',
               '10:00 - 11:30: Engelsk',
               '12:45 - 14:15: Biologi',
@@ -165,6 +166,7 @@ class SkemaSide extends StatelessWidget {
           ScheduleView(
             schedule: '2g-Klasse',
             timeSlots: [
+              'Tirsdag',
               '08:15 - 09:45: Fysik',
               '10:00 - 11:30: Kemi',
               '12:45 - 14:15: Idehistroie',
@@ -173,6 +175,7 @@ class SkemaSide extends StatelessWidget {
           ScheduleView(
             schedule: '3g-Klasse',
             timeSlots: [
+              'Onsdag',
               '10:00 - 11:30: Valgfag',
               '12:45 - 14:15: Matematik',
               '14:30 - 16:00: Kemi',
@@ -217,11 +220,12 @@ class PostItPicturesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // List of image paths
     final List<String> images = [
-      'assets/images/metal.png',
+      'assets/images/Skole.png',
       'assets/images/skate.png',
       'assets/images/celle.png',
       'assets/images/aften.png',
       'assets/images/fest.png',
+      'assets/images/metal.png'
       // Add more image paths as needed
     ];
 
@@ -304,9 +308,14 @@ class LinksSide extends StatelessWidget {
       'title': 'Sukkertoppen',
       'url': 'https://www.nextkbh.dk/gymnasier/sukkertoppen-gymnasium/'
     },
-    {'title': 'YouTube', 'url': 'https://youtube.com'},
-    {'title': 'DR', 'url': 'https://dr.dk'},
-    {'title': 'TV2', 'url': 'https://tv2.dk'},
+    {
+      'title': 'Sukkerbloggen',
+      'url': 'https://www.youtube.com/channel/UCuhde7D51gq5tgowxqNIpLA'
+    },
+    {
+      'title': 'Sukkertoppen instagram',
+      'url': 'https://www.instagram.com/sukkertoppengym/'
+    },
   ];
 
   @override
