@@ -136,7 +136,7 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.interests_sharp),
-            label: 'Social',
+            label: 'Sociale medier',
           ),
         ],
         currentIndex: selectedIndex,
@@ -427,15 +427,18 @@ class LinksSide extends StatelessWidget {
   final List<Map<String, String>> links = [
     {
       'title': 'Sukkertoppen',
-      'url': 'https://www.nextkbh.dk/gymnasier/sukkertoppen-gymnasium/'
+      'url': 'https://www.nextkbh.dk/gymnasier/sukkertoppen-gymnasium/',
+      'icon': 'link',
     },
     {
       'title': 'Sukkerbloggen',
-      'url': 'https://www.youtube.com/channel/UCuhde7D51gq5tgowxqNIpLA'
+      'url': 'https://www.youtube.com/channel/UCuhde7D51gq5tgowxqNIpLA',
+      'icon': 'video_library',
     },
     {
-      'title': 'Sukkertoppen instagram',
-      'url': 'https://www.instagram.com/sukkertoppengym/'
+      'title': 'Sukkertoppen Instagram',
+      'url': 'https://www.instagram.com/sukkertoppengym/',
+      'icon': 'photo_camera',
     },
   ];
 
@@ -443,39 +446,47 @@ class LinksSide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Links'),
+        title: Text('Følg os på de sociale medier'),
         centerTitle: true,
       ),
-      body: PageView(
-        children: links.map((link) {
-          return ListView(
-            padding: EdgeInsets.all(16.0),
-            children: [
-              Text(
-                link['title']!,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  padding: EdgeInsets.all(16.0),
+      body: ListView.builder(
+        padding: EdgeInsets.all(16.0),
+        itemCount: links.length,
+        itemBuilder: (context, index) {
+          final link = links[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              children: [
+                Icon(
+                  getIconData(link['icon']!),
+                  size: 40,
+                  color: Theme.of(context).primaryColor,
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebViewPage(url: link['url']!),
+                SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: EdgeInsets.all(16.0),
                     ),
-                  );
-                },
-                child: Text('Go to ${link['title']}'),
-              ),
-            ],
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WebViewPage(url: link['url']!),
+                        ),
+                      );
+                    },
+                    child: Text(link['title']!),
+                  ),
+                ),
+              ],
+            ),
           );
-        }).toList(),
+        },
       ),
     );
   }
@@ -525,7 +536,7 @@ class ArrowIndicator extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.5),
+          color: const Color.fromARGB(255, 4, 2, 62).withOpacity(0.5),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -534,5 +545,20 @@ class ArrowIndicator extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+IconData getIconData(String iconName) {
+  switch (iconName) {
+    case 'link':
+      return Icons.link;
+    case 'video_library':
+      return Icons.video_library;
+    case 'photo_camera':
+      return Icons.photo_camera;
+    case 'tv':
+      return Icons.tv;
+    default:
+      return Icons.link; // Default icon
   }
 }
